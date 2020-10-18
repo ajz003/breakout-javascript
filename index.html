@@ -44,6 +44,7 @@ for (var c = 0; c < brickColumnCount; c++) {
 }
 
 var score = 0;
+var lives = 3;
 
 function drawBricks() {
     for (var c = 0; c < brickColumnCount; c++) {
@@ -110,7 +111,7 @@ function collisionDetection() {
                     if(score == brickRowCount*brickColumnCount) {
                         alert("YOU WIN, CONGRATULATIONS!");
                         document.location.reload();
-                        clearInterval(interval); // Needed for Chrome to end game
+                         // Needed for Chrome to end game
                     }
                 }
             }
@@ -122,6 +123,12 @@ function drawScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Score: " + score, 8, 20);
+}
+
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
 }
 
 function drawBall() {
@@ -147,6 +154,7 @@ function draw() {
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
     collisionDetection();
     
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -161,9 +169,20 @@ function draw() {
             dy = -dy;
             fillColor = getRandomColor();
         } else {
-            alert("GAME OVER");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game            
+            lives--;
+            if (!lives) {
+                alert("GAME OVER");                
+                document.location.reload();
+                 // Needed for Chrome to end game                  
+            }
+            else {
+                x = canvas.width/2;
+                y = canvas.height-30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width-paddleWidth)/2;
+            }
+          
         }
 
     }
@@ -181,13 +200,14 @@ function draw() {
                 paddleX = 0;
             }
         }
+    requestAnimationFrame(draw);
 }
 
 function getRandomColor() {
   return "#"+((1<<24)*Math.random()|0).toString(16);
 }
 
-var interval = setInterval(draw, 10);
+draw();
 
 </script>
 
